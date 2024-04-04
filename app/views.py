@@ -6,9 +6,9 @@ This file creates your application.
 """
 
 from app import app
-from flask import render_template, request, jsonify, send_file
+from flask import render_template, request, jsonify, send_file,Flask
+from werkzeug.utils import secure_filename
 import os
-
 
 ###
 # Routing for your application.
@@ -61,3 +61,43 @@ def add_header(response):
 def page_not_found(error):
     """Custom 404 page."""
     return render_template('404.html'), 404
+
+UPLOAD_FOLDER = 'uploads'
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
+
+app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+@app.route('/api/v1/movies', methods=['POST'])
+def movies():
+    form = MovieForm(request.form)
+    if form.validate_on_submit():
+        title = form.title.data
+        description = form.description.data
+        poster = request.files['poster']
+        
+        if poster.filename == '':
+            return jsonify({'error': 'No file selected!'}), 400
+
+        if not allowed_file(poster.filename):
+            return jsonify({'error': 'Invalid file type!'}), 400
+
+        filename = secure_filename(poster.filename)
+        poster.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+        movie = Movie(title=title, description=description, poster=filename)
+        db.session.add(movie)
+        db.session.commit()
+
+        return jsonify({
+            'message': 'Movie Successfully added',
+            'title': movie.title,
+            'poster': filename,
+            'description': movie.description
+        }), 201
+    else:
+        errors = form_errors(form)
+        return jsonify({'errors': errors}), 400
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
