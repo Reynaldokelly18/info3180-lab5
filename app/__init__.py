@@ -11,4 +11,5 @@ db= SQLAlchemy(app)
 app.config['SESSION_SQLALCHEMY'] = db
 from flask_migrate import Migrate
 migrate =  Migrate(app,db)
+from . import models 
 from app import views

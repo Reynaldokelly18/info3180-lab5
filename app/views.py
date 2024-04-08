@@ -9,7 +9,10 @@ from app import app
 from flask import render_template, request, jsonify, send_file,Flask
 from werkzeug.utils import secure_filename
 import os
-
+from .forms import MovieForm
+from . import db
+from .models import Movie
+from flask_wtf.csrf import generate_csrf
 ###
 # Routing for your application.
 ###
@@ -60,17 +63,17 @@ def add_header(response):
 @app.errorhandler(404)
 def page_not_found(error):
     """Custom 404 page."""
-    return render_template('404.html'), 404
+    return jsonify({
+            'message': '404',
+            
+        }),404
 
 UPLOAD_FOLDER = 'uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
-
-app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
 @app.route('/api/v1/movies', methods=['POST'])
 def movies():
-    form = MovieForm(request.form)
+    form = MovieForm()
+    print ("i am here")
     if form.validate_on_submit():
         title = form.title.data
         description = form.description.data
@@ -101,3 +104,12 @@ def movies():
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@app.route('/api/v1/csrf-token', methods=['GET'])
+def get_csrf():
+ return jsonify({'csrf_token': generate_csrf()}) 
+
+app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+
