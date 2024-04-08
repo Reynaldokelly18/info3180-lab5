@@ -2,10 +2,12 @@
     <section class="moviecontainer"> 
         <div class="movie" v-for="movie in movies">
          <img v-bind:src="`../uploads/${movie.poster}`" alt="">
-         <h4>  {{ movie.title }}</h4>
-         <p>
-            {{ movie.description }}
-         </p>
+         <div class="moviebody">
+            <h4>  {{ movie.title }}</h4>
+            <p>
+               {{ movie.description }}
+           </p>
+         </div>
         </div>
 
     </section>
@@ -35,4 +37,23 @@ export default{
 
 </script>
 <style>
+section.moviecontainer{
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    grid-gap: 2em;
+    width: 90%;
+    margin: 2em auto;
+}
+div.movie img{
+   width: 50%;
+   
+}
+div.movie {
+    display: flex;
+    flex-flow: row wrap;
+}
+div.moviebody {
+    display: flex;
+    flex-flow: column wrap;
+}
 </style>
