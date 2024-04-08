@@ -1,12 +1,12 @@
-<script setup>
-
-
-</script>
-
-<template>
-    
+<template> 
+    <MoviesContainer />
 </template>
-
+<script> 
+     import MoviesContainer from "../components/MoviesContainer.vue"
+     export default  {
+        components: {MoviesContainer},
+     }
+    
+</script>
 <style>
-/* Add any component specific styles here */
 </style>

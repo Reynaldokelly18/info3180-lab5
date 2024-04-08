@@ -20,13 +20,13 @@
     </form>
 </template>
 <script> 
-import { ref, onMounted } from "vue"; 
+//import { ref, onMounted } from "vue"; 
 //let csrf_token = ref(""); 
 export default{
     data(){
         return{
             message:'',
-            csrf_token:'',
+            csrf_token:"",
         }
     },
     methods:{

@@ -109,6 +109,16 @@ def allowed_file(filename):
 def get_csrf():
  return jsonify({'csrf_token': generate_csrf()}) 
 
+@app.route('/api/v1/movies', methods=['GET'])
+def get_movies():
+ fetched_movies = db.session.query(Movie).all()
+ movies=[]
+ for movie in fetched_movies: 
+     movies.append({"title":movie.title,"description":movie.description,"poster":movie.poster})
+     print (jsonify(movies))
+ return jsonify(movies) 
+
+
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
